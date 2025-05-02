@@ -8,6 +8,7 @@ import ru.yandex.blog.model.Paging;
 import ru.yandex.blog.model.Post;
 import ru.yandex.blog.service.PostService;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 

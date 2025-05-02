@@ -1,7 +1,7 @@
 package ru.yandex.blog.service;
 
 import org.springframework.stereotype.Service;
-import ru.yandex.blog.dao.PostRepository;
+import ru.yandex.blog.dao.post.PostRepository;
 import ru.yandex.blog.model.Paging;
 import ru.yandex.blog.model.Post;
 

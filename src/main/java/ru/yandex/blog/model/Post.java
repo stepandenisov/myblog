@@ -12,7 +12,6 @@ public class Post {
     private int id;
     private String title;
     private String text;
-    private String imagePath;
     private long likesCount;
     private String[] comments;
     private String[] tags;

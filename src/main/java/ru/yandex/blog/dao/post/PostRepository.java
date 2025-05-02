@@ -1,4 +1,4 @@
-package ru.yandex.blog.dao;
+package ru.yandex.blog.dao.post;
 
 import ru.yandex.blog.model.Paging;
 import ru.yandex.blog.model.Post;

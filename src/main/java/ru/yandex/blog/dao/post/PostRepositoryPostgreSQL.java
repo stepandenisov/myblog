@@ -1,14 +1,11 @@
-package ru.yandex.blog.dao;
+package ru.yandex.blog.dao.post;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.yandex.blog.model.Paging;
 import ru.yandex.blog.model.Post;
 
-import java.sql.PreparedStatement;
 import java.util.*;
 
 @Repository
@@ -37,14 +34,13 @@ public class PostRepositoryPostgreSQL implements PostRepository {
                 rs.getInt("id"),
                 rs.getString("title"),
                 rs.getString("post_text"),
-                rs.getString("image_path"),
                 rs.getLong("likes_count"),
                 rs.getObject("post_comments", String[].class),
                 rs.getObject("tag_array", String[].class));
 
         List<Post> posts = jdbcTemplate.query(
                 """
-                    select distinct posts.id, posts.title, posts.post_text, posts.image_path, posts.likes_count, posts.post_comments, posts_tags_joined.tag_array from posts
+                    select distinct posts.id, posts.title, posts.post_text, posts.likes_count, posts.post_comments, posts_tags_joined.tag_array from posts
                     left outer join posts_tags on posts.id = posts_tags.post_id
                     left outer join  (
                        select posts_tags.post_id as id, array_agg(posts_tags_joined.tag_name) as tag_array
@@ -53,7 +49,7 @@ public class PostRepositoryPostgreSQL implements PostRepository {
                        group  by posts_tags.post_id
                        ) posts_tags_joined using (id)
                     where ? = any(posts_tags_joined.tag_array)
-                    order by posts.id              
+                    order by posts.id
                     limit ? offset ?
                 """,
                 new Object[]{search, limit, skip},
