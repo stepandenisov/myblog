@@ -15,7 +15,8 @@ public class ImageController {
         this.imageService = imageService;
     }
 
-    @GetMapping(path= {"/", "/{postId}"})
+    @GetMapping
+    @RequestMapping("/{postId}")
     @ResponseBody
     public byte[] image(@PathVariable int postId){
         return imageService.getImageByPostId(postId);
