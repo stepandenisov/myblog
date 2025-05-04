@@ -11,6 +11,7 @@ import ru.yandex.blog.service.PostService;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/posts")
@@ -20,6 +21,16 @@ public class PostController {
 
     public PostController(PostService postService) {
         this.postService = postService;
+    }
+
+    @GetMapping
+    @RequestMapping("/{id}")
+    public String post(@PathVariable(name="id") int id,
+                        Model model) {
+        Optional<Post> post = postService.findById(id);
+        if (post.isEmpty()) return "redirect:/posts";
+        model.addAttribute("post", post.get());
+        return "post";
     }
 
     @GetMapping("/")
@@ -33,5 +44,21 @@ public class PostController {
         model.addAttribute("search", search);
         model.addAttribute("paging", paging);
         return "posts";
+    }
+
+    @PostMapping("/{id}/like")
+    public String changeLikes(
+            @PathVariable(name="id") int id,
+            @RequestParam(name = "like") boolean like,
+            Model model)
+    {
+        Optional<Post> post = postService.findById(id);
+        if (post.isEmpty()) return "redirect:/posts";
+        Post actualPost = post.get();
+        actualPost.applyLikes(like? 1 : -1);
+        Optional<Post> updatedPost = postService.updatePost(id, actualPost);
+        if (updatedPost.isEmpty()) return "redirect:/posts";
+        model.addAttribute("post", updatedPost);
+        return "redirect:/posts/{id}";
     }
 }

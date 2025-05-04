@@ -63,10 +63,10 @@
             <td>
                 <h2 th:text="${post.getTitle()}"></h2>
                 <p>
-                    <img height="300" th:src="${'http://localhost:8080/images/'+post.getId()}">
+                    <img height="300" th:src="${'http://localhost:8082/images/'+post.getId()}">
                 </p>
                 <p>
-                    <form th:action="${'/posts/'+post.getId()+'/like'}" method="post">
+                    <form th:action="${'/myblog_war_exploded/posts/'+post.getId()+'/like'}" method="post">
                         <button name="like" value="true">&#x1F44D;</button>
                         <span th:text="${post.getLikesCount()}"></span>
                         <button name="like" value="false">&#128078;</button>
@@ -78,9 +78,9 @@
                 </p>
             </td>
         </tr>
-        <tr th:each="textPart : ${post.getTextParts()}">
-            <td th:text="${textPart}"></td>
-        </tr>
+<!--        <tr th:each="textPart : ${post.getTextParts()}">-->
+<!--            <td th:text="${textPart}"></td>-->
+<!--        </tr>-->
         <tr>
             <td>
                 <hr>
@@ -89,20 +89,20 @@
         </tr>
         <tr th:each="comment : ${post.getComments()}">
             <td style="border-left:thin solid grey;">
-                <form method="POST" th:action="${'/posts/'+post.getId()+'/comments/'+comment.getId()}">
+                <form method="POST" th:action="${'/myblog_war_exploded/posts/'+post.getId()+'/comments/'+comment.getId()}">
                     <span th:id="${'comment'+comment.getId()}" th:text="${comment.getText()}"></span>
                     <button th:id="${comment.getId()}" onclick="editComment(this.id)" style="float:right;">&#9998;</button>
                 </form>
             </td>
             <td>
-                <form method="POST" th:action="${'/posts/'+post.getId()+'/comments/'+comment.getId()+'/delete'}">
+                <form method="POST" th:action="${'/myblog_war_exploded/posts/'+post.getId()+'/comments/'+comment.getId()+'/delete'}">
                     <button style="float:right;">&#10007;</button>
                 </form>
             </td>
         </tr>
         <tr>
             <td>
-                <form id="addCommentForm" th:action="${'/posts/'+post.getId()+'/comments'}" method="post">
+                <form id="addCommentForm" th:action="${'/myblog_war_exploded/posts/'+post.getId()+'/comments'}" method="post">
                     <button id="addCommentButton" style="float:right;" onclick="addComment()">Добавить комментарий</button>
                 </form>
             </td>

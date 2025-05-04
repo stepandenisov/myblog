@@ -25,4 +25,8 @@ public class PostService {
         return postRepository.searchPaginated(search, paging);
     }
 
+    public Optional<Post> updatePost(int id, Post post){
+        return postRepository.updatePost(id, post);
+    }
+
 }

@@ -1,18 +1,17 @@
 create table if not exists posts
 (
-    id            bigserial primary key,
-    title         varchar(256) not null,
-    post_text     text         not null,
-    likes_count   integer      not null,
-    post_comments text ARRAY
+    id          bigserial primary key,
+    title       varchar(256) not null,
+    post_text   text         not null,
+    likes_count integer      not null
 );
 
-insert into posts(title, post_text, likes_count, post_comments)
-values ('First post', 'Text of the first post', 0, '"Good post", "Bad post"');
-insert into posts(title, post_text, likes_count, post_comments)
-values ('Second post', 'Text of the second post', 0, '"Best post", "Worst post"');
-insert into posts(title, post_text, likes_count, post_comments)
-values ('Third post', 'Text of the third post', 0, '"Neutral post", "Ordinary post"');
+insert into posts(title, post_text, likes_count)
+values ('First post', 'Text of the first post', 0);
+insert into posts(title, post_text, likes_count)
+values ('Second post', 'Text of the second post', 0);
+insert into posts(title, post_text, likes_count)
+values ('Third post', 'Text of the third post', 0);
 
 
 create table if not exists tags
@@ -28,10 +27,27 @@ values ('Second tag');
 insert into tags(tag_name)
 values ('Third tag');
 
+create table if not exists post_comments
+(
+    id           bigserial primary key,
+    post_id      int  not null references posts(id),
+    comment_text text not null
+);
+
+insert into post_comments(post_id, comment_text)
+values (1, 'First comment');
+insert into post_comments(post_id, comment_text)
+values (2, 'Second comment');
+insert into post_comments(post_id, comment_text)
+values (2, 'Third comment');
+-- insert into comments(post_id, comment_text)
+-- values (3, 'Fourth comment');
+
+
 create table if not exists posts_tags
 (
-    post_id int not null references posts(id),
-    tag_id  int not null references tags(id)
+    post_id int not null references posts (id),
+    tag_id  int not null references tags (id)
 );
 
 insert into posts_tags(post_id, tag_id)
@@ -45,8 +61,8 @@ values (1, 3);
 
 create table if not exists images
 (
-    post_id int unique not null references posts(id),
-    image  bytea not null
+    post_id int unique not null references posts (id),
+    image   bytea      not null
 );
 
 insert into images(post_id, image)

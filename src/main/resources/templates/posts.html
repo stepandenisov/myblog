@@ -41,13 +41,13 @@
                 <h2 th:text="${post.getTitle()}"></h2>
                 <p>
                     <a th:href="${'/posts/'+post.getId()}">
-<!--                        <img height="300" th:src="${'http://localhost:8082/images/'+post.getId()}">-->
+                        <img height="300" th:src="${'http://localhost:8082/images/'+post.getId()}">
                     </a>
                 </p>
                 <p th:text="${post.getTextPreview()}"></p>
                 <p>
                     <span th:text="${'&#x1F44D; '+post.getLikesCount()}"></span>
-                    <span th:text="${'&#x2709; '+post.getComments().length}"></span>
+                    <span th:text="${'&#x2709; '+post.getComments().size()}"></span>
                 </p>
                 <p>
                     <span th:each="tag : ${post.getTags()}" th:text="${'#'+tag+' '}"></span>

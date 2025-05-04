@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface PostRepository {
     Optional<Post> findById(int id);
     List<Post> searchPaginated(String search, Paging paging);
+
+    Optional<Post> updatePost(int id, Post post);
 }
