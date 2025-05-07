@@ -17,7 +17,7 @@ values ('Third post', 'Text of the third post', 0);
 create table if not exists tags
 (
     id       bigserial primary key,
-    tag_name varchar(256) not null
+    tag_name varchar(256) unique not null
 );
 
 insert into tags(tag_name)
@@ -61,6 +61,7 @@ values (1, 3);
 
 create table if not exists images
 (
+    id bigserial primary key,
     post_id int unique not null references posts (id),
     image   bytea      not null
 );

@@ -3,6 +3,7 @@ package ru.yandex.blog.dao.post;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import ru.yandex.blog.dto.PostDto;
 import ru.yandex.blog.model.Comment;
 import ru.yandex.blog.model.Paging;
 import ru.yandex.blog.model.Post;
@@ -19,8 +20,8 @@ public class PostRepositoryPostgreSQL implements PostRepository {
         Integer[] commentIds = rs.getObject("comment_id_array", Integer[].class);
         String[] commentTexts = rs.getObject("comment_text_array", String[].class);
         List<Comment> comments = new ArrayList<>();
-        if (commentIds != null){
-            for (int i = 0; i < commentIds.length; i ++){
+        if (commentIds != null) {
+            for (int i = 0; i < commentIds.length; i++) {
                 comments.add(new Comment(commentIds[i], postId, commentTexts[i]));
             }
         }
@@ -125,5 +126,65 @@ public class PostRepositoryPostgreSQL implements PostRepository {
                         """,
                 post.getTitle(), post.getText(), post.getLikesCount(), id);
         return updateCount == 1 ? Optional.of(post) : Optional.empty();
+    }
+
+    public int insertPost(PostDto postDto) {
+        int insertedPostId = jdbcTemplate.queryForObject(
+                """
+                        select id
+                          from final TABLE (
+                            insert into posts (title, post_text, likes_count)
+                            VALUES (?, ?, ?)
+                          ) posts
+                        """,
+                new Object[]{postDto.getTitle(), postDto.getText(), 0},
+                (rs, rowNum) -> rs.getInt("id"));
+
+        String insertTagsSql = String.join(",", Collections.nCopies(postDto.getTagIds().size(), String.format("(%d, ?)", insertedPostId)));
+
+        jdbcTemplate.update(
+                String.format("""
+                        insert into posts_tags (post_id, tag_id)
+                        values %s
+                        """, insertTagsSql),
+                postDto.getTagIds().toArray());
+        return insertedPostId;
+    }
+
+    @Override
+    public void deletePost(int id) {
+        jdbcTemplate.update("""
+                delete from posts_tags where post_id = ?
+                """,
+                id);
+        jdbcTemplate.update("""
+                        delete from posts where id = ?
+                        """,
+                id);
+    }
+
+    @Override
+    public void updatePost(int id, PostDto postDto) {
+        jdbcTemplate.update(
+                """
+                        update posts set posts.title = ?, posts.post_text = ?
+                        where id = ?
+                        """,
+                postDto.getTitle(), postDto.getText(), id);
+
+        String insertTagsSql = String.join(",", Collections.nCopies(postDto.getTagIds().size(), String.format("(%d, ?)", id)));
+
+        jdbcTemplate.update(
+                """
+                        delete from posts_tags where post_id = ?
+                        """,
+                id);
+
+        jdbcTemplate.update(
+                String.format("""
+                        insert into posts_tags (post_id, tag_id)
+                        values %s
+                        """, insertTagsSql),
+                postDto.getTagIds().toArray());
     }
 }

@@ -1,5 +1,6 @@
 package ru.yandex.blog.dao.post;
 
+import ru.yandex.blog.dto.PostDto;
 import ru.yandex.blog.model.Paging;
 import ru.yandex.blog.model.Post;
 
@@ -9,6 +10,11 @@ import java.util.Optional;
 public interface PostRepository {
     Optional<Post> findById(int id);
     List<Post> searchPaginated(String search, Paging paging);
-
     Optional<Post> updatePost(int id, Post post);
+    int insertPost(PostDto postDto);
+
+    void deletePost(int id);
+
+    void updatePost(int id, PostDto postDto);
+
 }

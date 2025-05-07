@@ -9,9 +9,10 @@ import ru.yandex.blog.model.Post;
 import java.util.Optional;
 
 @Repository
-public class CommentRepositoryPostgreSQL implements CommentRepository{
+public class CommentRepositoryPostgreSQL implements CommentRepository {
 
     private final JdbcTemplate jdbcTemplate;
+
     public CommentRepositoryPostgreSQL(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -25,10 +26,10 @@ public class CommentRepositoryPostgreSQL implements CommentRepository{
     public Optional<Comment> findCommentById(int id) {
         return Optional.of(jdbcTemplate.queryForObject(
                 """
-                select post_comments.id, post_comments.post_id, post_comments.comment_text
-                from post_comments
-                where id = ?
-                """,
+                        select post_comments.id, post_comments.post_id, post_comments.comment_text
+                        from post_comments
+                        where id = ?
+                        """,
                 new Object[]{id},
                 commentRowMapper));
     }
@@ -37,20 +38,20 @@ public class CommentRepositoryPostgreSQL implements CommentRepository{
     public Optional<Comment> insertComment(int postId, String commentText) {
         int insertedId = jdbcTemplate.queryForObject(
                 """
-                select id
-                  from final TABLE (
-                    insert into post_comments (post_id, comment_text)
-                    VALUES (?, ?)
-                  ) comments
-                """,
+                        select id
+                          from final TABLE (
+                            insert into post_comments (post_id, comment_text)
+                            VALUES (?, ?)
+                          ) post_comments
+                        """,
                 new Object[]{postId, commentText},
                 (rs, rowNum) -> rs.getInt("id"));
         return Optional.of(jdbcTemplate.queryForObject(
                 """
-                select post_comments.id, post_comments.post_id, post_comments.comment_text
-                from post_comments
-                where id = ?
-                """,
+                        select post_comments.id, post_comments.post_id, post_comments.comment_text
+                        from post_comments
+                        where id = ?
+                        """,
                 new Object[]{insertedId},
                 commentRowMapper));
     }
@@ -59,10 +60,10 @@ public class CommentRepositoryPostgreSQL implements CommentRepository{
     public Optional<Comment> updateComment(int id, Comment comment) {
         int updateCount = jdbcTemplate.update(
                 """
-                update post_comments
-                set post_comments.post_id = ?, post_comments.comment_text = ?
-                where id = ?
-                """,
+                        update post_comments
+                        set post_comments.post_id = ?, post_comments.comment_text = ?
+                        where id = ?
+                        """,
                 comment.getPostId(), comment.getText(), id);
         return updateCount == 1 ? Optional.of(comment) : Optional.empty();
     }
@@ -71,8 +72,16 @@ public class CommentRepositoryPostgreSQL implements CommentRepository{
     public void deleteComment(int id) {
         jdbcTemplate.update(
                 """
-                delete from post_comments where id = ?
-                """,
+                        delete from post_comments where id = ?
+                        """,
                 id);
+    }
+
+    @Override
+    public void deleteCommentByPostId(int postId) {
+        jdbcTemplate.update("""
+                delete from post_comments where post_id = ?
+                """,
+                postId);
     }
 }
