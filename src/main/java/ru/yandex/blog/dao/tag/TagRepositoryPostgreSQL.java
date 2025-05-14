@@ -1,15 +1,12 @@
 package ru.yandex.blog.dao.tag;
 
-import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Repository

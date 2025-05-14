@@ -2,7 +2,6 @@ package ru.yandex.blog.dao.image;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.multipart.MultipartFile;
 
 @Repository
 public class ImageRepositoryPostgreSQL implements ImageRepository {

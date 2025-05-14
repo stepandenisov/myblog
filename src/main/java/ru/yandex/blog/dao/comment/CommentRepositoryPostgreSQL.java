@@ -4,7 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.blog.model.Comment;
-import ru.yandex.blog.model.Post;
 
 import java.util.Optional;
 

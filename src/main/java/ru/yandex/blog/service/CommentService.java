@@ -3,7 +3,6 @@ package ru.yandex.blog.service;
 import org.springframework.stereotype.Service;
 import ru.yandex.blog.dao.comment.CommentRepository;
 import ru.yandex.blog.model.Comment;
-import ru.yandex.blog.model.Post;
 
 import java.util.Optional;
 

@@ -1,7 +1,5 @@
 package ru.yandex.blog.controller;
 
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,10 +9,8 @@ import ru.yandex.blog.model.Paging;
 import ru.yandex.blog.model.Post;
 import ru.yandex.blog.service.PostService;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Controller
