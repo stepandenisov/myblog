@@ -1,7 +1,6 @@
 package ru.yandex.blog.configuration;
 
 import org.h2.Driver;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,8 +22,8 @@ public class DataSourceConfiguration {
     @Bean
     public DataSource dataSource(
             @Value("${spring.datasource.url}") String url,
-            @Value("${postgresql-user}") String username,
-            @Value("${postgresql-password}") String password
+            @Value("${spring.datasource.username}") String username,
+            @Value("${spring.datasource.password}") String password
     ) {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(Driver.class.getName());
