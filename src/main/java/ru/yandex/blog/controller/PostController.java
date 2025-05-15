@@ -49,15 +49,14 @@ public class PostController {
     @PostMapping("/{id}/like")
     public String changeLikes(
             @PathVariable(name = "id") int id,
-            @RequestParam(name = "like") boolean like,
-            Model model) {
+            @RequestParam(name = "like") boolean like) {
         Optional<Post> post = postService.findById(id);
         if (post.isEmpty()) return "redirect:/posts";
         Post actualPost = post.get();
+        if (!like && actualPost.getLikesCount() <= 0) return "redirect:/posts/{id}";
         actualPost.applyLikes(like ? 1 : -1);
         Optional<Post> updatedPost = postService.updatePost(id, actualPost);
         if (updatedPost.isEmpty()) return "redirect:/posts";
-        model.addAttribute("post", updatedPost);
         return "redirect:/posts/{id}";
     }
 
