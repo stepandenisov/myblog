@@ -8,10 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
-import ru.yandex.blog.configuration.DataSourceConfiguration;
 import ru.yandex.blog.configuration.ServiceConfiguration;
-import ru.yandex.blog.configuration.WebConfiguration;
 import ru.yandex.blog.dao.post.PostRepository;
 import ru.yandex.blog.dto.PostDto;
 import ru.yandex.blog.model.Comment;
@@ -44,7 +41,7 @@ public class PostServiceUnitTest {
     private ImageService imageService;
 
     @Test
-    void insert_shouldInsertPost() {
+    void insertPost_shouldInsertPost() {
         when(tagService.addTags("First tag"))
                 .thenReturn(List.of(1));
         doReturn(1).when(postRepository)
@@ -58,7 +55,7 @@ public class PostServiceUnitTest {
     }
 
     @Test
-    void getById_shouldReturnPostById() {
+    void findById_shouldReturnPostById() {
         List<Comment> commentList = List.of(new Comment(1, 1, "comment"));
         String[] tags = new String[]{"tag"};
         Post testPost = new Post(
@@ -83,7 +80,7 @@ public class PostServiceUnitTest {
     }
 
     @Test
-    void update_shouldUpdatePostAndReturnUpdated() {
+    void updatePost_shouldUpdatePostAndReturnUpdated() {
         List<Comment> commentList = List.of(new Comment(1, 1, "comment"));
         String[] tags = new String[]{"tag"};
         Post testPost = new Post(
@@ -108,7 +105,7 @@ public class PostServiceUnitTest {
     }
 
     @Test
-    void search_shouldReturnPaginatedPosts() {
+    void searchPaginated_shouldReturnPaginatedPosts() {
         List<Comment> commentList = List.of(new Comment(1, 1, "comment"));
         String[] tags = new String[]{"tag"};
         List<Post> postList = List.of(

@@ -12,7 +12,6 @@ import ru.yandex.blog.configuration.ServiceConfiguration;
 import ru.yandex.blog.dao.comment.CommentRepository;
 import ru.yandex.blog.model.Comment;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +29,7 @@ public class CommentServiceUnitTest {
     private CommentRepository commentRepository;
 
     @Test
-    public void insert_shouldReturnInsertedComment(){
+    public void insertComment_shouldReturnInsertedComment(){
 
         when(commentRepository.insertComment(1, "test"))
                 .thenReturn(Optional.of(new Comment(1, 1, "test")));
@@ -44,7 +43,7 @@ public class CommentServiceUnitTest {
     }
 
     @Test
-    public void update_shouldReturnUpdatedComment(){
+    public void updateComment_shouldReturnUpdatedComment(){
 
         Comment testComment = new Comment(1, 1, "test");
 

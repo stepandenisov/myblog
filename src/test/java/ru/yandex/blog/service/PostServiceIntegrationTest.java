@@ -8,27 +8,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import ru.yandex.blog.configuration.DataSourceConfiguration;
 import ru.yandex.blog.configuration.ServiceConfiguration;
-import ru.yandex.blog.configuration.WebConfiguration;
-import ru.yandex.blog.dto.PostDto;
 import ru.yandex.blog.model.Comment;
 import ru.yandex.blog.model.Paging;
 import ru.yandex.blog.model.Post;
 
-import javax.imageio.ImageIO;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.WritableRaster;
-import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,7 +65,7 @@ public class PostServiceIntegrationTest {
     }
 
     @Test
-    void update_shouldUpdatePost() {
+    void updatePost_shouldUpdatePost() {
 
         postService.updatePost(1, "title", "text", "tag", new byte[]{1});
         Optional<Post> result = postService.findById(1);
@@ -94,20 +80,20 @@ public class PostServiceIntegrationTest {
     }
 
     @Test
-    void delete_shouldDeletePost() {
+    void deletePost_shouldDeletePost() {
         postService.deletePost(1);
         Optional<Post> result = postService.findById(1);
         assertTrue(result.isEmpty(), "Удаленный пост должен отсутствовать");
     }
 
     @Test
-    void insert_shouldInsertPost() {
+    void insertPost_shouldInsertPost() {
         int insertedPostId = postService.insertPost("Test", "Test", "First tag", new byte[]{1});
         assertEquals(4, insertedPostId, "Вставленный id должен быть равен 4");
     }
 
     @Test
-    void getById_shouldReturnPostById() {
+    void findById_shouldReturnPostById() {
         Optional<Post> result = postService.findById(1);
         assertTrue(result.isPresent(), "Пост должен существовать");
         Post post = result.get();
@@ -124,7 +110,7 @@ public class PostServiceIntegrationTest {
     }
 
     @Test
-    void update_shouldUpdatePostAndReturnUpdated() {
+    void updatePost_shouldUpdatePostAndReturnUpdated() {
         List<Comment> commentList = List.of(new Comment(1, 1, "comment"));
         String[] tags = new String[]{"tag"};
         Post testPost = new Post(
@@ -147,7 +133,7 @@ public class PostServiceIntegrationTest {
     }
 
     @Test
-    void search_shouldReturnPaginatedPosts() {
+    void searchPaginated_shouldReturnPaginatedPosts() {
         Paging paging = new Paging(1, 10, false, false);
         List<Post> result = postService.searchPaginated("", paging);
         assertEquals(3, result.size(), "Количество постов должно быть 3");

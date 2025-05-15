@@ -8,10 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
 import ru.yandex.blog.configuration.ServiceConfiguration;
-import ru.yandex.blog.configuration.WebConfiguration;
-import ru.yandex.blog.dao.post.PostRepository;
 import ru.yandex.blog.dao.tag.TagRepository;
 
 import java.util.List;

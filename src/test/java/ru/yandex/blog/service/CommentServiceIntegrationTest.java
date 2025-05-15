@@ -3,18 +3,12 @@ package ru.yandex.blog.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import ru.yandex.blog.configuration.ServiceConfiguration;
-import ru.yandex.blog.dao.comment.CommentRepository;
 import ru.yandex.blog.model.Comment;
-import ru.yandex.blog.model.Post;
 
 import java.util.Optional;
 
@@ -51,7 +45,7 @@ public class CommentServiceIntegrationTest {
     }
 
     @Test
-    void insert_shouldInsertComment() {
+    void insertComment_shouldInsertComment() {
 
         Optional<Comment> result = commentService.insertComment(1, "test");
         assertTrue(result.isPresent(), "Вставленный пост должен существовать");
@@ -63,7 +57,7 @@ public class CommentServiceIntegrationTest {
     }
 
     @Test
-    void update_shouldUpdateComment() {
+    void updateComment_shouldUpdateComment() {
 
         Comment testComment = new Comment(1, 1, "test");
 

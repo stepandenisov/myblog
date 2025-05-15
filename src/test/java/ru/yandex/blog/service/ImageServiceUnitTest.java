@@ -9,14 +9,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import ru.yandex.blog.configuration.ServiceConfiguration;
-import ru.yandex.blog.dao.comment.CommentRepository;
 import ru.yandex.blog.dao.image.ImageRepository;
-import ru.yandex.blog.model.Comment;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @SpringJUnitConfig(classes = {ServiceConfiguration.class})

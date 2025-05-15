@@ -12,7 +12,7 @@ import ru.yandex.blog.model.Post;
 import java.util.*;
 
 @Repository
-public class PostRepositoryPostgreSQL implements PostRepository {
+public class PostRepositoryH2 implements PostRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -35,7 +35,7 @@ public class PostRepositoryPostgreSQL implements PostRepository {
                 rs.getObject("tag_array", String[].class));
     };
 
-    public PostRepositoryPostgreSQL(JdbcTemplate jdbcTemplate) {
+    public PostRepositoryH2(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

@@ -9,11 +9,11 @@ import ru.yandex.blog.model.Comment;
 import java.util.Optional;
 
 @Repository
-public class CommentRepositoryPostgreSQL implements CommentRepository {
+public class CommentRepositoryH2 implements CommentRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public CommentRepositoryPostgreSQL(JdbcTemplate jdbcTemplate) {
+    public CommentRepositoryH2(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

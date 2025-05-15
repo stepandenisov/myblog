@@ -4,8 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -16,7 +14,6 @@ import org.springframework.web.context.WebApplicationContext;
 import ru.yandex.blog.configuration.DataSourceConfiguration;
 import ru.yandex.blog.configuration.WebConfiguration;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,7 +51,7 @@ public class CommentControllerIntegrationTest {
     }
 
     @Test
-    void add_shouldAddCommentToPostAndRedirect() throws Exception {
+    void addComment_shouldAddCommentToPostAndRedirect() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/posts/1/comments")
                         .param("text", "Test"))
                 .andExpect(status().is3xxRedirection())
@@ -62,7 +59,7 @@ public class CommentControllerIntegrationTest {
     }
 
     @Test
-    void update_shouldUpdateCommentAndRedirect() throws Exception {
+    void updateComment_shouldUpdateCommentAndRedirect() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/posts/1/comments/1")
                         .param("text", "new test text"))
                 .andExpect(status().is3xxRedirection())
@@ -70,7 +67,7 @@ public class CommentControllerIntegrationTest {
     }
 
     @Test
-    void delete_shouldDeleteCommentAndRedirect() throws Exception {
+    void deleteComment_shouldDeleteCommentAndRedirect() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/posts/1/comments/1/delete"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/posts/1"));

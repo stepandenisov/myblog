@@ -10,11 +10,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Repository
-public class TagRepositoryPostgreSQL implements TagRepository {
+public class TagRepositoryH2 implements TagRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public TagRepositoryPostgreSQL(JdbcTemplate jdbcTemplate) {
+    public TagRepositoryH2(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

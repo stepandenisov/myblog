@@ -10,10 +10,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import ru.yandex.blog.configuration.ServiceConfiguration;
 
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 @SpringJUnitConfig(classes = {ServiceConfiguration.class})
 @TestPropertySource(locations = "classpath:test-application.properties")
@@ -65,14 +62,14 @@ public class ImageServiceIntegrationTest {
     }
 
     @Test
-    public void delete_shouldDeleteImage(){
+    public void deleteImageByPostId_shouldDeleteImage(){
         imageService.deleteImageByPostId(1);
         byte[] image = imageService.getImageByPostId(1);
         assertNull(image, "Изображения не должно быть");
     }
 
     @Test
-    public void update_shouldUpdateImage(){
+    public void updateImageByPostId_shouldUpdateImage(){
         byte[] testImage = new byte[]{1};
         imageService.updateImageByPostId(1, testImage);
         byte[] image = imageService.getImageByPostId(1);

@@ -8,14 +8,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import ru.yandex.blog.configuration.ServiceConfiguration;
-import ru.yandex.blog.model.Post;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.mockito.Mockito.when;
 
 @SpringJUnitConfig(classes = {ServiceConfiguration.class})
 @TestPropertySource(locations = "classpath:test-application.properties")

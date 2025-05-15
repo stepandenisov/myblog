@@ -55,7 +55,7 @@ public class ImageControllerIntegrationTest {
     }
 
     @Test
-    void add_shouldAddImageToPostAndRedirect() throws Exception {
+    void image_shouldGetImageForPost() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/images/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM));

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
@@ -13,17 +12,13 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ru.yandex.blog.configuration.WebConfiguration;
 import ru.yandex.blog.configuration.DataSourceConfiguration;
 
-import java.io.File;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -79,7 +74,7 @@ public class PostControllerIntegrationTest {
     }
 
     @Test
-    void getPosts_shouldReturnHtmlWithPosts() throws Exception {
+    void posts_shouldReturnHtmlWithPosts() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/posts"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
@@ -92,7 +87,7 @@ public class PostControllerIntegrationTest {
     }
 
     @Test
-    void getPost_shouldReturnHtmlWithPost() throws Exception {
+    void post_shouldReturnHtmlWithPost() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/posts/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
@@ -105,7 +100,7 @@ public class PostControllerIntegrationTest {
     }
 
     @Test
-    void add_shouldAddPostToDatabaseAndRedirect() throws Exception {
+    void insert_shouldAddPostToDatabaseAndRedirect() throws Exception {
         MockMultipartFile image = new MockMultipartFile("image", "", "application/json", "{\"image\": \"D:\\Projects\\myblog\\src\\main\\resources\\assets\\1.jpg\"}".getBytes());
         MockPart titlePart = new MockPart("title", "Test".getBytes());
         MockPart textPart = new MockPart("text", "Test".getBytes());
@@ -135,7 +130,7 @@ public class PostControllerIntegrationTest {
     }
 
     @Test
-    void getEditPostPage_shouldRedirectToEditPostPage() throws Exception {
+    void edit_shouldRedirectToEditPostPage() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/posts/1/edit"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
@@ -155,7 +150,7 @@ public class PostControllerIntegrationTest {
     }
 
     @Test
-    void addPostPage_shouldReturnAddPostView() throws Exception {
+    void addPost_shouldReturnAddPostView() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/posts/add"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("add-post"));

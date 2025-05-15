@@ -4,14 +4,12 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
-public class ImageRepositoryPostgreSQL implements ImageRepository {
+public class ImageRepositoryH2 implements ImageRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public ImageRepositoryPostgreSQL(JdbcTemplate jdbcTemplate) {
+    public ImageRepositoryH2(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
