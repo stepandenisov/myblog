@@ -23,8 +23,7 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping
-    @RequestMapping("/{id}")
+    @GetMapping("/{id}")
     public String post(@PathVariable(name = "id") int id,
                        Model model) {
         Optional<Post> post = postService.findById(id);
@@ -85,7 +84,7 @@ public class PostController {
         return "add-post";
     }
 
-    @PostMapping(path = {"/{id}", ""}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(path = {"/{id}"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public String edit(@PathVariable int id, @RequestPart String title, @RequestPart String text, @RequestPart String tags, @RequestPart MultipartFile image) throws IOException {
         postService.updatePost(id, title, text, tags, image.getBytes());
         return "redirect:/posts/"+id;
