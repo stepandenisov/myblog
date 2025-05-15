@@ -1,5 +1,6 @@
 package ru.yandex.blog.dao.comment;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -23,14 +24,18 @@ public class CommentRepositoryPostgreSQL implements CommentRepository {
 
     @Override
     public Optional<Comment> findCommentById(int id) {
-        return Optional.of(jdbcTemplate.queryForObject(
-                """
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(
+                    """
                         select post_comments.id, post_comments.post_id, post_comments.comment_text
                         from post_comments
                         where id = ?
                         """,
                 new Object[]{id},
                 commentRowMapper));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override
