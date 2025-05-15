@@ -19,6 +19,9 @@ import javax.sql.DataSource;
 @PropertySource("classpath:application.properties")
 public class DataSourceConfiguration {
 
+    @Value("${project-path}")
+    private String projectPath;
+
     @Bean
     public DataSource dataSource(
             @Value("${spring.datasource.url}") String url,
@@ -46,6 +49,12 @@ public class DataSourceConfiguration {
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.addScript(new ClassPathResource("schema.sql")); // Файл должен находиться в ресурсах
         populator.execute(dataSource);
+
+        JdbcTemplate jdbcTemplate = event.getApplicationContext().getBean(JdbcTemplate.class);
+
+        jdbcTemplate.execute("insert into images(post_id, image) values (1, file_read('" + projectPath + "src/main/resources/assets/1.jpg'));");
+        jdbcTemplate.execute("insert into images(post_id, image) values (2, file_read('" + projectPath + "src/main/resources/assets/2.jpg'));");
+        jdbcTemplate.execute("insert into images(post_id, image) values (3, file_read('" + projectPath + "src/main/resources/assets/3.jpg'));");
     }
 
 }

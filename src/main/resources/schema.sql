@@ -65,10 +65,3 @@ create table if not exists images
     post_id int unique not null references posts (id),
     image   bytea      not null
 );
-
-insert into images(post_id, image)
-values (1, file_read('D:\Projects\myblog\src\main\resources\assets\1.jpg'));
-insert into images(post_id, image)
-values (2, file_read('D:\Projects\myblog\src\main\resources\assets\2.jpg'));
-insert into images(post_id, image)
-values (3, file_read('D:\Projects\myblog\src\main\resources\assets\3.jpg'));

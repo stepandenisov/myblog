@@ -4,6 +4,7 @@ package ru.yandex.blog.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -17,6 +18,9 @@ import static org.mockito.Mockito.when;
 @SpringJUnitConfig(classes = {ServiceConfiguration.class})
 @TestPropertySource(locations = "classpath:test-application.properties")
 public class ImageServiceIntegrationTest {
+
+    @Value("${project-path}")
+    private String projectPath;
 
     @Autowired
     private ImageService imageService;
@@ -39,9 +43,9 @@ public class ImageServiceIntegrationTest {
         jdbcTemplate.execute("insert into posts(title, post_text, likes_count) values ('Second post', 'Text of the second post', 0);");
         jdbcTemplate.execute("insert into posts(title, post_text, likes_count) values ('Third post', 'Text of the third post', 0);");
 
-        jdbcTemplate.execute("insert into images(post_id, image) values (1, file_read('D:\\Projects\\myblog\\src\\main\\resources\\assets\\1.jpg'));");
-        jdbcTemplate.execute("insert into images(post_id, image) values (2, file_read('D:\\Projects\\myblog\\src\\main\\resources\\assets\\2.jpg'));");
-        jdbcTemplate.execute("insert into images(post_id, image) values (3, file_read('D:\\Projects\\myblog\\src\\main\\resources\\assets\\3.jpg'));");
+        jdbcTemplate.execute("insert into images(post_id, image) values (1, file_read('" + projectPath + "src/main/resources/assets/1.jpg'));");
+        jdbcTemplate.execute("insert into images(post_id, image) values (2, file_read('" + projectPath + "src/main/resources/assets/2.jpg'));");
+        jdbcTemplate.execute("insert into images(post_id, image) values (3, file_read('" + projectPath + "src/main/resources/assets/3.jpg'));");
     }
 
     @Test

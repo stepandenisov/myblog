@@ -4,6 +4,7 @@ package ru.yandex.blog.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -17,16 +18,26 @@ import ru.yandex.blog.model.Comment;
 import ru.yandex.blog.model.Paging;
 import ru.yandex.blog.model.Post;
 
+import javax.imageio.ImageIO;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.WritableRaster;
+import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @SpringJUnitConfig(classes = {ServiceConfiguration.class})
 @TestPropertySource(locations = "classpath:test-application.properties")
 public class PostServiceIntegrationTest {
+
+    @Value("${project-path}")
+    private String projectPath;
 
     @Autowired
     private PostService postService;
@@ -62,13 +73,14 @@ public class PostServiceIntegrationTest {
         jdbcTemplate.execute("insert into posts_tags(post_id, tag_id) values (3, 3);");
         jdbcTemplate.execute("insert into posts_tags(post_id, tag_id) values (1, 3);");
 
-        jdbcTemplate.execute("insert into images(post_id, image) values (1, file_read('D:\\Projects\\myblog\\src\\main\\resources\\assets\\1.jpg'));");
-        jdbcTemplate.execute("insert into images(post_id, image) values (2, file_read('D:\\Projects\\myblog\\src\\main\\resources\\assets\\2.jpg'));");
-        jdbcTemplate.execute("insert into images(post_id, image) values (3, file_read('D:\\Projects\\myblog\\src\\main\\resources\\assets\\3.jpg'));");
+        jdbcTemplate.execute("insert into images(post_id, image) values (1, file_read('" + projectPath + "src/main/resources/assets/1.jpg'));");
+        jdbcTemplate.execute("insert into images(post_id, image) values (2, file_read('" + projectPath + "src/main/resources/assets/2.jpg'));");
+        jdbcTemplate.execute("insert into images(post_id, image) values (3, file_read('" + projectPath + "src/main/resources/assets/3.jpg'));");
     }
 
     @Test
     void update_shouldUpdatePost() {
+
         postService.updatePost(1, "title", "text", "tag", new byte[]{1});
         Optional<Post> result = postService.findById(1);
         assertTrue(result.isPresent(), "Обновленный пост должен существовать");
