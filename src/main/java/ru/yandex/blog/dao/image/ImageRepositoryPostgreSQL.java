@@ -1,7 +1,10 @@
 package ru.yandex.blog.dao.image;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public class ImageRepositoryPostgreSQL implements ImageRepository {
@@ -14,11 +17,15 @@ public class ImageRepositoryPostgreSQL implements ImageRepository {
 
     @Override
     public byte[] getImageByPostId(int postId) {
-        return jdbcTemplate.queryForObject(
-                "select image from images where post_id = ? limit 1",
-                new Object[]{postId},
-                ((rs, rowNum) -> rs.getBytes("image"))
-        );
+        try {
+            return jdbcTemplate.queryForObject(
+                    "select image from images where post_id = ? limit 1",
+                    new Object[]{postId},
+                    ((rs, rowNum) -> rs.getBytes("image"))
+            );
+        } catch (EmptyResultDataAccessException exception) {
+            return null;
+        }
     }
 
     @Override
