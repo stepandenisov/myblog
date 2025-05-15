@@ -1,5 +1,6 @@
 package ru.yandex.blog.dao.post;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -40,26 +41,31 @@ public class PostRepositoryPostgreSQL implements PostRepository {
 
     @Override
     public Optional<Post> findById(int id) {
-        return Optional.of(jdbcTemplate.queryForObject(
-                """
-                            select distinct posts.id, posts.title, posts.post_text, posts.likes_count, comments_joined.comment_text_array, comments_joined.comment_id_array, posts_tags_joined.tag_array from posts
-                            left outer join posts_tags on posts.id = posts_tags.post_id
-                            left outer join  (
-                               select posts_tags.post_id as id, array_agg(posts_tags_joined.tag_name) as tag_array
-                               from   posts_tags
-                               join   tags       posts_tags_joined  on posts_tags_joined.id = posts_tags.tag_id
-                               group  by posts_tags.post_id
-                               ) posts_tags_joined using (id)
-                            left outer join  (
-                               select posts.id as id, array_agg(post_comments.comment_text) comment_text_array, array_agg(post_comments.id) comment_id_array
-                               from   posts
-                               join post_comments on post_comments.post_id = posts.id
-                               group  by posts.id
-                               ) comments_joined using (id)
-                            where posts.id=?
-                        """,
-                new Object[]{id},
-                postRowMapper));
+        try {
+            Post post = jdbcTemplate.queryForObject(
+                    """
+                                select distinct posts.id, posts.title, posts.post_text, posts.likes_count, comments_joined.comment_text_array, comments_joined.comment_id_array, posts_tags_joined.tag_array from posts
+                                left outer join posts_tags on posts.id = posts_tags.post_id
+                                left outer join  (
+                                   select posts_tags.post_id as id, array_agg(posts_tags_joined.tag_name) as tag_array
+                                   from   posts_tags
+                                   join   tags       posts_tags_joined  on posts_tags_joined.id = posts_tags.tag_id
+                                   group  by posts_tags.post_id
+                                   ) posts_tags_joined using (id)
+                                left outer join  (
+                                   select posts.id as id, array_agg(post_comments.comment_text) comment_text_array, array_agg(post_comments.id) comment_id_array
+                                   from   posts
+                                   join post_comments on post_comments.post_id = posts.id
+                                   group  by posts.id
+                                   ) comments_joined using (id)
+                                where posts.id=?
+                            """,
+                    new Object[]{id},
+                    postRowMapper);
+            return Optional.of(post);
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -154,8 +160,8 @@ public class PostRepositoryPostgreSQL implements PostRepository {
     @Override
     public void deletePost(int id) {
         jdbcTemplate.update("""
-                delete from posts_tags where post_id = ?
-                """,
+                        delete from posts_tags where post_id = ?
+                        """,
                 id);
         jdbcTemplate.update("""
                         delete from posts where id = ?
