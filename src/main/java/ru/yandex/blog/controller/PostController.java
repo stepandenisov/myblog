@@ -65,19 +65,19 @@ public class PostController {
     }
 
     @PostMapping(path = {"/", ""}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public String insert(@RequestPart String title, @RequestPart String text, @RequestPart String tags, @RequestPart MultipartFile image) throws IOException {
+    public String insert(@RequestPart(name="title") String title, @RequestPart(name="text") String text, @RequestPart(name="tags") String tags, @RequestPart(name="image") MultipartFile image) throws IOException {
         int insertedId = postService.insertPost(title, text, tags, image.getBytes());
         return "redirect:/posts/"+insertedId;
     }
 
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable int id) {
+    public String delete(@PathVariable(name="id") int id) {
         postService.deletePost(id);
         return "redirect:/posts";
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(@PathVariable int id, Model model){
+    public String edit(@PathVariable(name="id") int id, Model model){
         Optional<Post> post = postService.findById(id);
         if (post.isEmpty()) return "redirect:/posts";
         model.addAttribute("post", post.get());
