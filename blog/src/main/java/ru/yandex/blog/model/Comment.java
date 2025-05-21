@@ -3,8 +3,9 @@ package ru.yandex.blog.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Getter
-@EqualsAndHashCode
 @Entity
 @Table(name = "post_comments")
 @AllArgsConstructor
@@ -19,4 +20,12 @@ public class Comment {
     @Setter
     @Column(name = "comment_text")
     private String text;
+
+
+    @Override
+    public boolean equals(Object obj){
+        if (obj.getClass() != Comment.class) return false;
+        Comment comment = (Comment) obj;
+        return Objects.equals(this.id, comment.getId());
+    }
 }

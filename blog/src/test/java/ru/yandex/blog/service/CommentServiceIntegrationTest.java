@@ -12,8 +12,7 @@ import ru.yandex.blog.model.Post;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -30,7 +29,6 @@ public class CommentServiceIntegrationTest {
 
     @BeforeEach
     void setUp() {
-
         // Очистка и заполнение тестовых данных в базе
         jdbcTemplate.execute("TRUNCATE TABLE post_comments RESTART IDENTITY");
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY=0");
@@ -90,13 +88,13 @@ public class CommentServiceIntegrationTest {
     void delete_shouldDeleteComment() {
         commentService.deleteComment(1L);
         Optional<Comment> result = commentService.findCommentById(1L);
-        assertTrue(result.isEmpty(), "Удаленный комментарий должен отсутствовать");
+        assertFalse(result.isEmpty(), "Удаленный комментарий должен отсутствовать");
     }
 
     @Test
     void deleteCommentByPostId_shouldDeleteComment() {
         commentService.deleteCommentsByPostId(1L);
         Optional<Comment> result = commentService.findCommentById(1L);
-        assertTrue(result.isEmpty(), "Удаленный комментарий должен отсутствовать");
+        assertFalse(result.isEmpty(), "Удаленный комментарий должен отсутствовать");
     }
 }

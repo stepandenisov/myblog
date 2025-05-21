@@ -46,9 +46,9 @@ public class CommentServiceUnitTest {
 
         Optional<Comment> result = commentService.insertComment(1L, "test");
         assertTrue(result.isPresent(), "Вставленный комментарий не должен отсутствовать");
-        assertEquals(1L, comment.getId(), "id комментария должен быть 1");
+        assertEquals(1L, insertedComment.getId(), "id комментария должен быть 1");
         assertNotNull(result.get().getPost(), "У комментария должен быть пост");
-        assertEquals("test", comment.getText(), "Комментарий должен быть test");
+        assertEquals("test", insertedComment.getText(), "Комментарий должен быть test");
     }
 
     @Test
@@ -58,6 +58,9 @@ public class CommentServiceUnitTest {
 
         when(commentRepository.findCommentById(1L))
                 .thenReturn(Optional.of(comment));
+
+        when(commentRepository.save(comment))
+                .thenReturn(comment);
 
         Comment testComment = new Comment(1L, post, "test");
 
