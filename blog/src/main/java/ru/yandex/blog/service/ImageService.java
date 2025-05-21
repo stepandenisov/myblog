@@ -26,11 +26,11 @@ public class ImageService {
         return imageRepository.findImagesByPostId(postId);
     }
 
-    public void addImageByPostId(Long postId, byte[] imageBytes){
+    public Optional<Image> addImageByPostId(Long postId, byte[] imageBytes){
         Optional<Post> post = postRepository.findById(postId);
-        if (post.isEmpty()) return;
+        if (post.isEmpty()) return Optional.empty();
         Image image = new Image(null, post.get(), imageBytes);
-        imageRepository.save(image);
+        return Optional.of(imageRepository.save(image));
     }
 
     public void deleteImageByPostId(Long postId){

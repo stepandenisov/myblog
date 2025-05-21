@@ -20,17 +20,17 @@ public class CommentService {
         this.postRepository = postRepository;
     }
 
-    public void insertComment(Long postId, String text){
+    public Optional<Comment> insertComment(Long postId, String text){
         Optional<Post> post = postRepository.findById(postId);
-        if (post.isEmpty()) return;
-        commentRepository.save(new Comment(null, post.get(), text));
+        if (post.isEmpty()) return Optional.empty();
+        return Optional.of(commentRepository.save(new Comment(null, post.get(), text)));
     }
 
-    public void updateComment(Long id, Comment newComment){
+    public Optional<Comment> updateComment(Long id, Comment newComment){
         Optional<Comment> comment = commentRepository.findCommentById(id);
-        if (comment.isEmpty()) return;
+        if (comment.isEmpty()) return Optional.empty();
         comment.get().setText(newComment.getText());
-        commentRepository.save(comment.get());
+        return Optional.of(commentRepository.save(comment.get()));
     }
 
     public Optional<Comment> findCommentById(Long id){
