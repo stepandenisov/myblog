@@ -24,9 +24,9 @@ public class Post{
     @Column(name = "post_text")
     private String text;
     private long likesCount;
-    @OneToMany(cascade=CascadeType.ALL, mappedBy = "post")
+    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL, mappedBy = "post")
     private List<Comment> comments;
-    @ManyToMany(cascade=CascadeType.DETACH)
+    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.DETACH)
     @JoinTable(
             name = "posts_tags",
             joinColumns = @JoinColumn(name = "post_id"),
