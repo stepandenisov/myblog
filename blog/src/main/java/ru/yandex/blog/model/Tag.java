@@ -3,6 +3,7 @@ package ru.yandex.blog.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,5 +26,13 @@ public class Tag {
     @Override
     public String toString(){
         return this.getName();
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if (obj.getClass() != Tag.class) return false;
+        Tag tag = (Tag) obj;
+        if (!Objects.equals(tag.getName(), this.getName())) return false;
+        return Objects.equals(tag.getId(), this.getId());
     }
 }
