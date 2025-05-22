@@ -1,11 +1,12 @@
 package ru.yandex.blog.dao.image;
 
-public interface ImageRepository {
-    byte[] getImageByPostId(int postId);
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import ru.yandex.blog.model.Image;
 
-    Integer addImageByPostId(int postId, byte[] image);
+public interface ImageRepository extends JpaRepository<Image, Long> {
+    Image findImagesByPostId(Long postId);
 
-    void deleteImageByPostId(int postId);
-
-    void updateImageByPostId(int postId, byte[] image);
+    @Transactional
+    void deleteImageByPostId(Long postId);
 }

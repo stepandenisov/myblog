@@ -1,7 +1,10 @@
 package ru.yandex.blog.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import ru.yandex.blog.service.ImageService;
 
 @Controller
@@ -16,8 +19,8 @@ public class ImageController {
 
     @GetMapping("/{postId}")
     @ResponseBody
-    public byte[] image(@PathVariable int postId){
-        return imageService.getImageByPostId(postId);
+    public byte[] image(@PathVariable Long postId){
+        return imageService.getImageByPostId(postId).getImage();
     }
 
 

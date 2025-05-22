@@ -4,25 +4,24 @@ package ru.yandex.blog.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import ru.yandex.blog.configuration.ServiceConfiguration;
+import ru.yandex.blog.model.Tag;
 
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitConfig(classes = {ServiceConfiguration.class})
-@TestPropertySource(locations = "classpath:test-application.properties")
+@SpringBootTest
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class TagServiceIntegrationTest {
 
     @Autowired
     private TagService tagService;
-
-    @Autowired
-    private PostService postService;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -40,19 +39,24 @@ public class TagServiceIntegrationTest {
     }
 
     @Test
-    public void addTags_shouldReturnIdsOfInsertedTags() {
+    public void getTagsFromString_shouldReturnIdsOfInsertedTags() {
         String[] tags = new String[]{"First tag", "Second tag"};
         List<Integer> tagIds = List.of(1, 2);
-        List<Integer> insertedTagIds = tagService.addTags(String.join(", ", tags));
-        assertEquals(tagIds, insertedTagIds, "все идентификаторы должны совпадать");
+        List<Tag> insertedTagIds = tagService.getTagsFromString(String.join(", ", tags));
+        assertArrayEquals(tagIds.toArray(), insertedTagIds.stream().map(Tag::getId).map(Long::intValue).toArray(), "все идентификаторы должны совпадать");
     }
 
     @Test
-    public void deleteTagsFromDeletedPost_shouldDeleteUnusedTags() {
-        Integer tagId = tagService.addTags("First tag").get(0);
-        postService.deletePost(1);
-        tagService.deleteTagsFromDeletedPost();
-        Integer insertedTagId = tagService.addTags("First tag").get(0);
-        assertNotEquals(tagId, insertedTagId, "id должны быть разными");
+    public void findTagByName_shouldFindTag() {
+        Tag tag = tagService.getTagsFromString("First tag").get(0);
+        assertEquals(tag.getName(), "First tag", "id должны быть разными");
+    }
+
+    @Test
+    public void save_shouldSaveTag(){
+        tagService.save("new tag");
+        Optional<Tag> tag = tagService.findTagByName("new tag");
+        assertTrue(tag.isPresent(), "Тег должен существовать");
+        assertEquals("new tag", tag.get().getName(), "Названия должны совпадать");
     }
 }

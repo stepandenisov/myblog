@@ -5,15 +5,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import ru.yandex.blog.configuration.ServiceConfiguration;
+import ru.yandex.blog.model.Image;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitConfig(classes = {ServiceConfiguration.class})
-@TestPropertySource(locations = "classpath:test-application.properties")
+@SpringBootTest
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class ImageServiceIntegrationTest {
 
     @Value("${project-path}")
@@ -47,33 +48,33 @@ public class ImageServiceIntegrationTest {
 
     @Test
     public void getImageByPostId_shouldReturnImageBytes(){
-        byte[] result = imageService.getImageByPostId(1);
-        assertNotNull(result, "Байты изображения должны быть");
+        Image result = imageService.getImageByPostId(1L);
+        assertNotNull(result.getImage(), "Байты изображения должны быть");
     }
 
     @Test
     public void addImageByPostId_shouldAddImageAndReturnId(){
 
         // PostService использует ImageService для сохранения изображения
-        int postId = postService.insertPost("test", "text", "First tag", new byte[]{1});
-        byte[] image = imageService.getImageByPostId(postId);
-        assertEquals(1, image.length, "Количество байт изображения должно быть 1");
-        assertEquals(1, image[0], "Изображения должны совпадать");
+        Long postId = postService.insertPost("test", "text", "First tag", new byte[]{1});
+        Image image = imageService.getImageByPostId(postId);
+        assertEquals(1, image.getImage().length, "Количество байт изображения должно быть 1");
+        assertEquals(1, image.getImage()[0], "Изображения должны совпадать");
     }
 
     @Test
     public void deleteImageByPostId_shouldDeleteImage(){
-        imageService.deleteImageByPostId(1);
-        byte[] image = imageService.getImageByPostId(1);
+        imageService.deleteImageByPostId(1L);
+        Image image = imageService.getImageByPostId(1L);
         assertNull(image, "Изображения не должно быть");
     }
 
     @Test
     public void updateImageByPostId_shouldUpdateImage(){
         byte[] testImage = new byte[]{1};
-        imageService.updateImageByPostId(1, testImage);
-        byte[] image = imageService.getImageByPostId(1);
-        assertArrayEquals(image, testImage, "Изображения должны совпадать");
+        imageService.updateImageByPostId(1L, testImage);
+        Image image = imageService.getImageByPostId(1L);
+        assertArrayEquals(image.getImage(), testImage, "Изображения должны совпадать");
     }
 
 }

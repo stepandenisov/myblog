@@ -24,7 +24,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public String post(@PathVariable(name = "id") int id,
+    public String post(@PathVariable(name = "id") Long id,
                        Model model) {
         Optional<Post> post = postService.findById(id);
         if (post.isEmpty()) return "redirect:/posts";
@@ -47,7 +47,7 @@ public class PostController {
 
     @PostMapping("/{id}/like")
     public String changeLikes(
-            @PathVariable(name = "id") int id,
+            @PathVariable(name = "id") Long id,
             @RequestParam(name = "like") boolean like) {
         Optional<Post> post = postService.findById(id);
         if (post.isEmpty()) return "redirect:/posts";
@@ -55,7 +55,7 @@ public class PostController {
         if (!like && actualPost.getLikesCount() <= 0) return "redirect:/posts/{id}";
         actualPost.applyLikes(like ? 1 : -1);
         Optional<Post> updatedPost = postService.updatePost(id, actualPost);
-        if (updatedPost.isEmpty()) return "redirect:/posts";
+        if (updatedPost.isEmpty())  return "redirect:/posts";
         return "redirect:/posts/{id}";
     }
 
@@ -66,18 +66,18 @@ public class PostController {
 
     @PostMapping(path = {"/", ""}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public String insert(@RequestPart(name="title") String title, @RequestPart(name="text") String text, @RequestPart(name="tags") String tags, @RequestPart(name="image") MultipartFile image) throws IOException {
-        int insertedId = postService.insertPost(title, text, tags, image.getBytes());
+        Long insertedId = postService.insertPost(title, text, tags, image.getBytes());
         return "redirect:/posts/"+insertedId;
     }
 
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable(name="id") int id) {
+    public String delete(@PathVariable(name="id") Long id) {
         postService.deletePost(id);
         return "redirect:/posts";
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(@PathVariable(name="id") int id, Model model){
+    public String edit(@PathVariable(name="id") Long id, Model model){
         Optional<Post> post = postService.findById(id);
         if (post.isEmpty()) return "redirect:/posts";
         model.addAttribute("post", post.get());
@@ -85,8 +85,9 @@ public class PostController {
     }
 
     @PostMapping(path = {"/{id}"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public String edit(@PathVariable int id, @RequestPart String title, @RequestPart String text, @RequestPart String tags, @RequestPart MultipartFile image) throws IOException {
-        postService.updatePost(id, title, text, tags, image.getBytes());
+    public String edit(@PathVariable Long id, @RequestPart String title, @RequestPart String text, @RequestPart String tags, @RequestPart MultipartFile image) throws IOException {
+        Optional<Post> post = postService.updatePost(id, title, text, tags, image.getBytes());
+        if (post.isEmpty()) return "redirect:/posts";
         return "redirect:/posts/"+id;
     }
 

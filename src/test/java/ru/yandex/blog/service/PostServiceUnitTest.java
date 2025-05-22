@@ -6,26 +6,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import ru.yandex.blog.configuration.ServiceConfiguration;
 import ru.yandex.blog.dao.post.PostRepository;
-import ru.yandex.blog.dto.PostDto;
-import ru.yandex.blog.model.Comment;
-import ru.yandex.blog.model.Paging;
-import ru.yandex.blog.model.Post;
+import ru.yandex.blog.model.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
 
-@SpringJUnitConfig(classes = {ServiceConfiguration.class})
-@TestPropertySource(locations = "classpath:test-application.properties")
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class PostServiceUnitTest {
 
     @InjectMocks
@@ -42,84 +39,82 @@ public class PostServiceUnitTest {
 
     @Test
     void insertPost_shouldInsertPost() {
-        when(tagService.addTags("First tag"))
-                .thenReturn(List.of(1));
-        doReturn(1).when(postRepository)
-                .insertPost(new PostDto("Test", "Test", List.of(1)));
 
-        doReturn(1).when(imageService)
-                .addImageByPostId(1, new byte[]{1});
+        Post post = new Post(null, "Test", "Test", 0L, new ArrayList<>(), new ArrayList<>());
+        Post insertedPost = new Post(1L, "Test", "Test", 0L, new ArrayList<>(), new ArrayList<>());
 
-        int insertedPostId = postService.insertPost("Test", "Test", "First tag", new byte[]{1});
+        doReturn(new Tag()).when(tagService)
+                .save("First tag");
+        doReturn(insertedPost).when(postRepository)
+                .save(post);
+
+        doReturn(Optional.of(new Image())).when(imageService)
+                .addImageByPostId(1L, new byte[]{1});
+
+        Long insertedPostId = postService.insertPost("Test", "Test", "First tag", new byte[]{1});
         assertEquals(1, insertedPostId, "Вставленный id должен быть равен 1");
     }
 
     @Test
     void findById_shouldReturnPostById() {
-        List<Comment> commentList = List.of(new Comment(1, 1, "comment"));
-        String[] tags = new String[]{"tag"};
         Post testPost = new Post(
-                1,
+                1L,
                 "title",
                 "text",
                 0,
-                commentList,
-                tags);
+                new ArrayList<>(),
+                new ArrayList<>());
         doReturn(Optional.of(testPost)).when(postRepository)
-                .findById(1);
+                .findById(1L);
 
-        Optional<Post> result = postService.findById(1);
+        Optional<Post> result = postService.findById(1L);
         assertTrue(result.isPresent(), "Пост должен существовать");
         Post post = result.get();
         assertEquals(1, post.getId(), "id должен быть равен 1");
         assertEquals("title", post.getTitle(), "title должен быть равен title");
         assertEquals("text", post.getText(), "text должен быть равен text");
         assertEquals(0, post.getLikesCount(), "likesCount должен быть равен 0");
-        assertEquals(commentList, post.getComments(), "comments должны совпадать");
-        assertEquals(tags, post.getTags(), "tags должны совпадать");
     }
 
     @Test
     void updatePost_shouldUpdatePostAndReturnUpdated() {
-        List<Comment> commentList = List.of(new Comment(1, 1, "comment"));
-        String[] tags = new String[]{"tag"};
-        Post testPost = new Post(
-                1,
-                "title",
-                "text",
-                0,
-                commentList,
-                tags);
-        doReturn(Optional.of(testPost)).when(postRepository)
-                .updatePost(1, testPost);
 
-        Optional<Post> result = postService.updatePost(1, testPost);
+        Post updatePost = new Post(1L, "New", "New", 0L, new ArrayList<>(), new ArrayList<>());
+
+        doReturn(Optional.of(updatePost)).when(postRepository)
+                .findById(1L);
+        doReturn(new Tag()).when(tagService)
+                .save("First tag");
+        doNothing().when(imageService)
+                .updateImageByPostId(1L, new byte[]{1});
+        doReturn(updatePost).when(postRepository)
+                .save(updatePost);
+
+        Optional<Post> result = postService.updatePost(1L, updatePost);
         assertTrue(result.isPresent(), "Пост должен существовать");
-        Post post = result.get();
-        assertEquals(1, post.getId(), "id должен быть равен 1");
-        assertEquals("title", post.getTitle(), "title должен быть равен title");
-        assertEquals("text", post.getText(), "text должен быть равен text");
-        assertEquals(0, post.getLikesCount(), "likesCount должен быть равен 0");
-        assertEquals(commentList, post.getComments(), "comments должны совпадать");
-        assertEquals(tags, post.getTags(), "tags должны совпадать");
+        assertEquals(1L, result.get().getId(), "id должен быть равен 1");
+        assertEquals("New", result.get().getTitle(), "title должен быть равен title");
+        assertEquals("New", result.get().getText(), "text должен быть равен text");
+        assertEquals(0, result.get().getLikesCount(), "likesCount должен быть равен 0");
     }
 
     @Test
     void searchPaginated_shouldReturnPaginatedPosts() {
-        List<Comment> commentList = List.of(new Comment(1, 1, "comment"));
-        String[] tags = new String[]{"tag"};
         List<Post> postList = List.of(
                 new Post(
-                        1,
+                        1L,
                         "title",
                         "text",
                         0,
-                        commentList,
-                        tags)
+                        new ArrayList<>(),
+                        new ArrayList<>())
         );
         Paging paging = new Paging(1, 10, false, false);
+        Tag tag = new Tag(1L, "test");
         doReturn(postList).when(postRepository)
-                .searchPaginated("test", paging);
+                .findAllByTagsContains(PageRequest.of(0, 10), tag);
+        doReturn(Optional.of(tag)).when(tagService)
+                .findTagByName("test");
 
         List<Post> result = postService.searchPaginated("test", paging);
         assertEquals(1, result.size(), "Количество постов должно быть 1");
@@ -128,7 +123,5 @@ public class PostServiceUnitTest {
         assertEquals("title", post.getTitle(), "title должен быть равен title");
         assertEquals("text", post.getText(), "text должен быть равен text");
         assertEquals(0, post.getLikesCount(), "likesCount должен быть равен 0");
-        assertEquals(commentList, post.getComments(), "comments должны совпадать");
-        assertEquals(tags, post.getTags(), "tags должны совпадать");
     }
 }

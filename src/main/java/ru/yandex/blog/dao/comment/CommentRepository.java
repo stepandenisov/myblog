@@ -1,14 +1,17 @@
 package ru.yandex.blog.dao.comment;
 
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import ru.yandex.blog.model.Comment;
 
 import java.util.Optional;
 
-public interface CommentRepository {
-    Optional<Comment> findCommentById(int id);
-    Optional<Comment> insertComment(int postId, String commentText);
-    Optional<Comment> updateComment(int id, Comment comment);
-    void deleteComment(int id);
-
-    void deleteCommentByPostId(int postId);
+@Repository
+public interface CommentRepository extends JpaRepository<Comment, Long> {
+    Optional<Comment> findCommentById(Long id);
+    @Transactional
+    void deleteCommentById(Long id);
+    @Transactional
+    void deleteCommentsByPostId(Long postId);
 }

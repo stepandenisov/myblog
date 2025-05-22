@@ -22,7 +22,7 @@ public class CommentController {
     }
 
     @PostMapping("/{id}/comments")
-    public String addComment(@PathVariable("id") int postId,
+    public String addComment(@PathVariable("id") Long postId,
                              @RequestParam(name = "text") String text,
                              Model model) {
         commentService.insertComment(postId, text);
@@ -30,8 +30,8 @@ public class CommentController {
     }
 
     @PostMapping("/{id}/comments/{commentId}")
-    public String updateComment(@PathVariable("id") int postId,
-                                @PathVariable("commentId") int commentId,
+    public String updateComment(@PathVariable("id") Long postId,
+                                @PathVariable("commentId") Long commentId,
                                 @RequestParam(name = "text") String text,
                                 Model model) {
         Optional<Comment> comment = commentService.findCommentById(commentId);
@@ -43,8 +43,8 @@ public class CommentController {
     }
 
     @PostMapping("/{id}/comments/{commentId}/delete")
-    public String deleteComment(@PathVariable("id") int postId,
-                                @PathVariable("commentId") int commentId,
+    public String deleteComment(@PathVariable("id") Long postId,
+                                @PathVariable("commentId") Long commentId,
                                 Model model) {
         commentService.deleteComment(commentId);
         return "redirect:/posts/{id}";

@@ -1,19 +1,35 @@
 package ru.yandex.blog.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
+@Entity
+@Table(name = "posts")
 @AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 public class Post{
-    private int id;
+
+    @Id
+    @Setter
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String title;
+
+    @Column(name = "post_text")
     private String text;
     private long likesCount;
+    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL, mappedBy = "post")
     private List<Comment> comments;
-    private String[] tags;
+    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.DETACH)
+    @JoinTable(
+            name = "posts_tags",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private List<Tag> tags;
 
 
     public String getTextPreview(){
@@ -25,9 +41,8 @@ public class Post{
     }
 
     public String getTagsAsText(){
-        return String.join(", ", tags);
+        return tags.stream().map(Tag::getName).reduce((a, b) -> a + ", " + b).orElse("");
     }
-
 
     public void applyLikes(int value){
         this.likesCount += value ;
