@@ -1,35 +1,34 @@
 package ru.yandex.blog.model;
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.MappedCollection;
+import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Entity
-@Table(name = "posts")
-@AllArgsConstructor
+@Table(name = "POSTS")
 @NoArgsConstructor
 @EqualsAndHashCode
+@AllArgsConstructor
 public class Post{
 
     @Id
     @Setter
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
 
-    @Column(name = "post_text")
+    @Column("POST_TEXT")
     private String text;
     private long likesCount;
-    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL, mappedBy = "post")
+    @MappedCollection(idColumn = "POST_ID", keyColumn = "ID")
     private List<Comment> comments;
-    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.DETACH)
-    @JoinTable(
-            name = "posts_tags",
-            joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private List<Tag> tags;
+
+    @Column("POST_TAGS")
+    private String tags;
 
 
     public String getTextPreview(){
@@ -41,7 +40,11 @@ public class Post{
     }
 
     public String getTagsAsText(){
-        return tags.stream().map(Tag::getName).reduce((a, b) -> a + ", " + b).orElse("");
+        return tags;
+    }
+
+    public String[] getTags(){
+        return tags.split(", ");
     }
 
     public void applyLikes(int value){

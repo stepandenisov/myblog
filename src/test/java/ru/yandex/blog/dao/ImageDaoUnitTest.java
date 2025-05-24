@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.blog.dao.image.ImageRepository;
 import ru.yandex.blog.dao.post.PostRepository;
 import ru.yandex.blog.model.Comment;
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
+@SpringBootTest
 public class ImageDaoUnitTest {
 
     @Autowired
@@ -31,24 +32,20 @@ public class ImageDaoUnitTest {
 
     @Test
     public void save_shouldSaveImage() {
-        Post postToInsert = new Post(null, "text", "text", 0, new ArrayList<>(), new ArrayList<>());
-        Post insertedPost = postRepository.save(postToInsert);
-        Image image = new Image(null, insertedPost, new byte[]{1});
+        Image image = new Image(null, 1L, new byte[]{1});
         Image insertedImage = imageRepository.save(image);
-        assertArrayEquals(new byte[]{1}, insertedImage.getImage(), "Изображения должен быть test");
+        assertArrayEquals(image.getImage(), insertedImage.getImage(), "Изображения должны совпадать");
 
     }
 
     @Test
     public void findByPostId_shouldReturnImage() {
 
-        Post postToInsert = new Post(null, "text", "text", 0, new ArrayList<>(), new ArrayList<>());
-        Post insertedPost = postRepository.save(postToInsert);
-        Image imageToInsert = new Image(null, insertedPost, new byte[]{1});
+        Image imageToInsert = new Image(null, 1L, new byte[]{1});
         Image insertedImage = imageRepository.save(imageToInsert);
 
-        Image image = imageRepository.findImagesByPostId(insertedImage.getId());
-        assertNotNull(image, "Изображение должен быть");
+        Image image = imageRepository.findImagesByPostId(1L);
+        assertNotNull(image, "Изображение должно быть");
         assertEquals(insertedImage.getId(), image.getId(), "id должны совпадать");
 
     }
@@ -56,13 +53,11 @@ public class ImageDaoUnitTest {
     @Test
     public void deleteImageByPostId_shouldDeleteImage() {
 
-        Post postToInsert = new Post(null, "text", "text", 0, new ArrayList<>(), new ArrayList<>());
-        Post insertedPost = postRepository.save(postToInsert);
-        Image imageToInsert = new Image(null, insertedPost, new byte[]{1});
+        Image imageToInsert = new Image(null, 1L, new byte[]{1});
         imageRepository.save(imageToInsert);
 
-        imageRepository.deleteImageByPostId(insertedPost.getId());
-        Image image = imageRepository.findImagesByPostId(insertedPost.getId());
+        imageRepository.deleteImageByPostId(1L);
+        Image image = imageRepository.findImagesByPostId(1L);
         assertNull(image, "Изображение должно отсутствовать");
 
     }

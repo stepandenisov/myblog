@@ -28,8 +28,10 @@ public class ImageService {
 
     public Optional<Image> addImageByPostId(Long postId, byte[] imageBytes){
         Optional<Post> post = postRepository.findById(postId);
-        if (post.isEmpty()) return Optional.empty();
-        Image image = new Image(null, post.get(), imageBytes);
+        if (post.isEmpty()) {
+            return Optional.empty();
+        }
+        Image image = new Image(null, postId, imageBytes);
         return Optional.of(imageRepository.save(image));
     }
 

@@ -1,19 +1,27 @@
 package ru.yandex.blog.dao.post;
 
-import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.JpaRepository;
-import ru.yandex.blog.model.Paging;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jdbc.repository.query.Modifying;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.blog.model.Post;
-import ru.yandex.blog.model.Tag;
 
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.Optional;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends CrudRepository<Post, Long> {
     Optional<Post> findById(Long id);
-    List<Post> findAllByTagsContains(PageRequest pageRequest, Tag tag);
-    @Transactional
-    void deletePostById(Long id);
+    List<Post> findAllByTagsContains(String tag, Pageable pageable);
+
+    List<Post> findAll(Pageable pageable);
+
+    @Modifying
+    @Query("delete from POSTS p where p.ID = :id")
+    void deletePostById(@Param("id") Long id);
+
+    long countAllByTagsContains(String tag);
+
 }

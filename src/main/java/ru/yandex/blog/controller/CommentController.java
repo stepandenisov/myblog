@@ -35,7 +35,9 @@ public class CommentController {
                                 @RequestParam(name = "text") String text,
                                 Model model) {
         Optional<Comment> comment = commentService.findCommentById(commentId);
-        if (comment.isEmpty()) return "redirect:/posts/{id}";
+        if (comment.isEmpty()) {
+            return "redirect:/posts/{id}";
+        }
         Comment actualComment = comment.get();
         actualComment.setText(text);
         commentService.updateComment(commentId, actualComment);

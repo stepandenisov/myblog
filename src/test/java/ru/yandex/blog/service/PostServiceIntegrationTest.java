@@ -8,17 +8,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
-import ru.yandex.blog.model.Comment;
 import ru.yandex.blog.model.Paging;
 import ru.yandex.blog.model.Post;
-import ru.yandex.blog.model.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -36,34 +33,23 @@ public class PostServiceIntegrationTest {
     @BeforeEach
     void setUp() {
         // Очистка и заполнение тестовых данных в базе
-        jdbcTemplate.execute("TRUNCATE TABLE images RESTART IDENTITY");
-        jdbcTemplate.execute("TRUNCATE TABLE posts_tags RESTART IDENTITY");
-        jdbcTemplate.execute("TRUNCATE TABLE post_comments RESTART IDENTITY");
+        jdbcTemplate.execute("TRUNCATE TABLE IMAGES RESTART IDENTITY");
+        jdbcTemplate.execute("TRUNCATE TABLE POST_COMMENTS RESTART IDENTITY");
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY=0");
-        jdbcTemplate.execute("TRUNCATE TABLE tags RESTART IDENTITY");
-        jdbcTemplate.execute("TRUNCATE TABLE posts RESTART IDENTITY");
+        jdbcTemplate.execute("TRUNCATE TABLE POSTS RESTART IDENTITY");
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY=1");
 
-        jdbcTemplate.execute("insert into posts(title, post_text, likes_count) values ('First post', 'Text of the first post', 0);");
-        jdbcTemplate.execute("insert into posts(title, post_text, likes_count) values ('Second post', 'Text of the second post', 0);");
-        jdbcTemplate.execute("insert into posts(title, post_text, likes_count) values ('Third post', 'Text of the third post', 0);");
+        jdbcTemplate.execute("insert into POSTS(TITLE, POST_TEXT, POST_TAGS, LIKES_COUNT) values ('First post', 'First tag','Text of the first post', 0);");
+        jdbcTemplate.execute("insert into POSTS(TITLE, POST_TEXT, POST_TAGS, LIKES_COUNT) values ('Second post', 'Second tag', 'Text of the second post', 0);");
+        jdbcTemplate.execute("insert into POSTS(TITLE, POST_TEXT, POST_TAGS, LIKES_COUNT) values ('Third post', 'Third tag', 'Text of the third post', 0);");
 
-        jdbcTemplate.execute("insert into tags(tag_name) values ('First tag');");
-        jdbcTemplate.execute("insert into tags(tag_name) values ('Second tag');");
-        jdbcTemplate.execute("insert into tags(tag_name) values ('Third tag');");
+        jdbcTemplate.execute("insert into POST_COMMENTS(POST_ID, COMMENT_TEXT) values (1, 'First comment');");
+        jdbcTemplate.execute("insert into POST_COMMENTS(POST_ID, COMMENT_TEXT) values (2, 'Second comment');");
+        jdbcTemplate.execute("insert into POST_COMMENTS(POST_ID, COMMENT_TEXT) values (2, 'Third comment');");
 
-        jdbcTemplate.execute("insert into post_comments(post_id, comment_text) values (1, 'First comment');");
-        jdbcTemplate.execute("insert into post_comments(post_id, comment_text) values (2, 'Second comment');");
-        jdbcTemplate.execute("insert into post_comments(post_id, comment_text) values (2, 'Third comment');");
-
-        jdbcTemplate.execute("insert into posts_tags(post_id, tag_id) values (1, 1);");
-        jdbcTemplate.execute("insert into posts_tags(post_id, tag_id) values (2, 2);");
-        jdbcTemplate.execute("insert into posts_tags(post_id, tag_id) values (3, 3);");
-        jdbcTemplate.execute("insert into posts_tags(post_id, tag_id) values (1, 3);");
-
-        jdbcTemplate.execute("insert into images(post_id, image) values (1, file_read('" + projectPath + "src/main/resources/assets/1.jpg'));");
-        jdbcTemplate.execute("insert into images(post_id, image) values (2, file_read('" + projectPath + "src/main/resources/assets/2.jpg'));");
-        jdbcTemplate.execute("insert into images(post_id, image) values (3, file_read('" + projectPath + "src/main/resources/assets/3.jpg'));");
+        jdbcTemplate.execute("insert into IMAGES(POST_ID, IMAGE) values (1, file_read('" + projectPath + "src/main/resources/assets/1.jpg'));");
+        jdbcTemplate.execute("insert into IMAGES(POST_ID, IMAGE) values (2, file_read('" + projectPath + "src/main/resources/assets/2.jpg'));");
+        jdbcTemplate.execute("insert into IMAGES(POST_ID, IMAGE) values (3, file_read('" + projectPath + "src/main/resources/assets/3.jpg'));");
     }
 
     @Test
@@ -77,8 +63,8 @@ public class PostServiceIntegrationTest {
         assertEquals(1, post.getId(), "id поста д.б. 1");
         assertEquals("title", post.getTitle(), "title поста д.б. равен title");
         assertEquals("text", post.getText(), "text поста д.б. равен text");
-        assertEquals(1, post.getTags().size(), "Количество тегов д.б. 1");
-        assertEquals("tag", post.getTags().get(0).getName(), "Теги поста д.б. равны [\"tag\"]");
+        assertEquals(1, post.getTags().length, "Количество тегов д.б. 1");
+        assertEquals("tag", post.getTags()[0], "Теги поста д.б. равны [\"tag\"]");
     }
 
     @Test
@@ -101,10 +87,10 @@ public class PostServiceIntegrationTest {
         Post post = result.get();
         assertEquals(1, post.getId(), "id должен быть равен 1");
         assertEquals("First post", post.getTitle(), "title должен быть равен title");
-        assertEquals("Text of the first post", post.getText(), "text должен быть равен text");
+        assertEquals("First tag", post.getText(), "text должен быть равен text");
         assertEquals(0, post.getLikesCount(), "likesCount должен быть равен 0");
-        assertEquals(2, post.getTags().size(), "Колчичество тегов первого поста д.б равно 2");
-        assertEquals("First tag", post.getTags().get(0).getName(), "Первый тег первого поста должен быть First tag");
+        assertEquals(1, post.getTags().length, "Колчичество тегов первого поста д.б равно 1");
+        assertEquals("Text of the first post", post.getTags()[0], "Первый тег первого поста должен быть First tag");
     }
 
     @Test
@@ -115,7 +101,7 @@ public class PostServiceIntegrationTest {
                 "text",
                 0,
                 new ArrayList<>(),
-                new ArrayList<>());
+                "First tag");
 
         Optional<Post> result = postService.updatePost(1L, testPost);
         assertTrue(result.isPresent(), "Пост должен существовать");
@@ -124,7 +110,7 @@ public class PostServiceIntegrationTest {
         assertEquals("title", post.getTitle(), "title должен быть равен title");
         assertEquals("text", post.getText(), "text должен быть равен text");
         assertEquals(0, post.getLikesCount(), "likesCount должен быть равен 0");
-        assertEquals(new ArrayList<>(), post.getTags(), "tags должны совпадать");
+        assertArrayEquals(new String[]{"First tag"}, post.getTags(), "tags должны совпадать");
     }
 
     @Test
@@ -135,7 +121,7 @@ public class PostServiceIntegrationTest {
         Post post = result.get(0);
         assertEquals(1, post.getId(), "id первого поста должен быть равен 1");
         assertEquals("First post", post.getTitle(), "title первого поста должен быть равен First post");
-        assertEquals("Text of the first post", post.getText(), "text первого поста должен быть равен Text of the first post");
+        assertEquals("First tag", post.getText(), "text первого поста должен быть равен First tag");
         assertEquals(0, post.getLikesCount(), "likesCount должен быть равен 0");
     }
 }

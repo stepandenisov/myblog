@@ -22,13 +22,17 @@ public class CommentService {
 
     public Optional<Comment> insertComment(Long postId, String text){
         Optional<Post> post = postRepository.findById(postId);
-        if (post.isEmpty()) return Optional.empty();
-        return Optional.of(commentRepository.save(new Comment(null, post.get(), text)));
+        if (post.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(commentRepository.save(new Comment(null, post.get().getId(), text)));
     }
 
     public Optional<Comment> updateComment(Long id, Comment newComment){
         Optional<Comment> comment = commentRepository.findCommentById(id);
-        if (comment.isEmpty()) return Optional.empty();
+        if (comment.isEmpty()) {
+            return Optional.empty();
+        }
         comment.get().setText(newComment.getText());
         return Optional.of(commentRepository.save(comment.get()));
     }
