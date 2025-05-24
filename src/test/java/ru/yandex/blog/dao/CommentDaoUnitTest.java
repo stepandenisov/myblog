@@ -5,10 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.blog.dao.comment.CommentRepository;
 import ru.yandex.blog.model.Comment;
 import ru.yandex.blog.model.Post;
-import ru.yandex.blog.model.Tag;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -16,7 +16,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DataJpaTest
+@SpringBootTest
 public class CommentDaoUnitTest {
 
     @Autowired
@@ -29,8 +29,7 @@ public class CommentDaoUnitTest {
 
     @Test
     public void save_shouldSaveComment() {
-        Post post = new Post(1L, "text", "text", 0, new ArrayList<>(), new ArrayList<>());
-        Comment comment = new Comment(null, post, "test");
+        Comment comment = new Comment(null, 1L, "test");
         Comment insertedComment = commentRepository.save(comment);
         assertEquals("test", insertedComment.getText(), "Текст должен быть test");
 
@@ -39,8 +38,7 @@ public class CommentDaoUnitTest {
     @Test
     public void findById_shouldReturnComment() {
 
-        Post post = new Post(1L, "text", "text", 0, new ArrayList<>(), new ArrayList<>());
-        Comment commentToInsert = new Comment(null, post, "test");
+        Comment commentToInsert = new Comment(null, 1L, "test");
         Comment insertedComment = commentRepository.save(commentToInsert);
 
         Optional<Comment> comment = commentRepository.findById(insertedComment.getId());
@@ -52,8 +50,7 @@ public class CommentDaoUnitTest {
     @Test
     public void deleteCommentById_shouldDeleteById() {
 
-        Post post = new Post(1L, "text", "text", 0, new ArrayList<>(), new ArrayList<>());
-        Comment commentToInsert = new Comment(null, post, "test");
+        Comment commentToInsert = new Comment(null, 1L, "test");
         Comment insertedComment = commentRepository.save(commentToInsert);
 
         commentRepository.deleteCommentById(insertedComment.getId());
@@ -65,8 +62,7 @@ public class CommentDaoUnitTest {
     @Test
     public void deleteCommentsByPostId_shouldDeleteByPostId() {
 
-        Post post = new Post(1L, "text", "text", 0, new ArrayList<>(), new ArrayList<>());
-        Comment commentToInsert = new Comment(null, post, "test");
+        Comment commentToInsert = new Comment(null, 1L, "test");
         Comment insertedComment = commentRepository.save(commentToInsert);
 
         commentRepository.deleteCommentsByPostId(1L);

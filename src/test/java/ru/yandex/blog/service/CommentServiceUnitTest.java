@@ -36,8 +36,8 @@ public class CommentServiceUnitTest {
     public void insertComment_shouldReturnInsertedComment(){
 
         Post post = new Post();
-        Comment comment = new Comment(null, post, "test");
-        Comment insertedComment = new Comment(1L, post, "test");
+        Comment comment = new Comment(null, 1L, "test");
+        Comment insertedComment = new Comment(1L, 1L, "test");
 
         when(postRepository.findById(1L))
                 .thenReturn(Optional.of(post));
@@ -47,14 +47,14 @@ public class CommentServiceUnitTest {
         Optional<Comment> result = commentService.insertComment(1L, "test");
         assertTrue(result.isPresent(), "Вставленный комментарий не должен отсутствовать");
         assertEquals(1L, insertedComment.getId(), "id комментария должен быть 1");
-        assertNotNull(result.get().getPost(), "У комментария должен быть пост");
+        assertNotNull(result.get().getPostId(), "У комментария должен быть пост");
         assertEquals("test", insertedComment.getText(), "Комментарий должен быть test");
     }
 
     @Test
     public void updateComment_shouldReturnUpdatedComment(){
         Post post = new Post();
-        Comment comment = new Comment(1L, post, "");
+        Comment comment = new Comment(1L, 1L, "");
 
         when(commentRepository.findCommentById(1L))
                 .thenReturn(Optional.of(comment));
@@ -62,20 +62,19 @@ public class CommentServiceUnitTest {
         when(commentRepository.save(comment))
                 .thenReturn(comment);
 
-        Comment testComment = new Comment(1L, post, "test");
+        Comment testComment = new Comment(1L, 1L, "test");
 
         Optional<Comment> result = commentService.updateComment(1L, testComment);
         assertTrue(result.isPresent(), "Обновленный комментарий не должен отсутствовать");
         assertEquals(1, result.get().getId(), "id комментария должен быть 1");
-        assertNotNull(result.get().getPost(), "Пост должен быть");
+        assertNotNull(result.get().getPostId(), "Пост должен быть");
         assertEquals("test", comment.getText(), "Комментарий должен быть test");
     }
 
     @Test
     public void findCommentById_shouldReturnComment(){
 
-        Post post = new Post();
-        Comment testComment = new Comment(1L, post, "test");
+        Comment testComment = new Comment(1L, 1L, "test");
 
         when(commentRepository.findCommentById(1L))
                 .thenReturn(Optional.of(testComment));
@@ -84,7 +83,7 @@ public class CommentServiceUnitTest {
         assertTrue(result.isPresent(), "Комментарий не должен отсутствовать");
         Comment comment = result.get();
         assertEquals(1, comment.getId(), "id комментария должен быть 1");
-        assertNotNull(comment.getPost(), "Пост должен быть");
+        assertNotNull(comment.getPostId(), "Пост должен быть");
         assertEquals("test", comment.getText(), "Комментарий должен быть test");
     }
 }

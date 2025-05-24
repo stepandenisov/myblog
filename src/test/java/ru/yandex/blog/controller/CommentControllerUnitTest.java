@@ -34,7 +34,7 @@ public class CommentControllerUnitTest {
     void addComment_shouldAddCommentToPostAndRedirect() throws Exception {
 
         when(commentService.insertComment(1L, "text"))
-                .thenReturn(Optional.of(new Comment(1L, new Post(), "text")));
+                .thenReturn(Optional.of(new Comment(1L, 1L, "text")));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/posts/1/comments")
                         .param("text", "Test"))
@@ -45,14 +45,13 @@ public class CommentControllerUnitTest {
     @Test
     void updateComment_shouldUpdateCommentAndRedirect() throws Exception {
 
-        Post post = new Post();
-        Comment newComment = new Comment(1L, post, "text");
+        Comment newComment = new Comment(1L, 1L, "text");
 
         when(commentService.findCommentById(1L))
                 .thenReturn(Optional.of(newComment));
 
         when(commentService.updateComment(1L, newComment))
-                .thenReturn(Optional.of(new Comment(1L, post, "new test text")));
+                .thenReturn(Optional.of(new Comment(1L, 1L, "new test text")));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/posts/1/comments/1")
                         .param("text", "new test text"))

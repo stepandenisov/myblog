@@ -1,24 +1,23 @@
 package ru.yandex.blog.model;
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.Objects;
 
 @Getter
-@Entity
-@Table(name = "post_comments")
+@Table(name = "POST_COMMENTS")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "post_id")
-    private Post post;
+
+    private Long postId;
     @Setter
-    @Column(name = "comment_text")
+    @Column("COMMENT_TEXT")
     private String text;
 
 

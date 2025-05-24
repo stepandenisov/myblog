@@ -30,7 +30,7 @@ public class ImageControllerUnitTest {
     @Test
     void image_shouldGetImageForPost() throws Exception {
 
-        Image image = new Image(1L, new Post(), new byte[]{1});
+        Image image = new Image(1L, 1L, new byte[]{1});
 
         when(imageService.getImageByPostId(1L)).thenReturn(image);
 

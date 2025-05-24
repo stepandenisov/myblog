@@ -35,7 +35,7 @@ public class ImageServiceUnitTest {
     @Test
     public void getImageByPostId_shouldReturnImageBytes(){
 
-        Image image = new Image(1L, new Post(), new byte[]{1});
+        Image image = new Image(1L, 1L, new byte[]{1});
 
         when(imageRepository.findImagesByPostId(1L))
                 .thenReturn(image);
@@ -48,8 +48,8 @@ public class ImageServiceUnitTest {
     public void addImageByPostId_shouldAddImageAndReturnId(){
 
         Post post = new Post();
-        Image image = new Image(null, post, new byte[]{1});
-        Image inserted = new Image(1L, post, new byte[]{1});
+        Image image = new Image(null, 1L, new byte[]{1});
+        Image inserted = new Image(1L, 1L, new byte[]{1});
 
         when(postRepository.findById(1L))
                 .thenReturn(Optional.of(post));

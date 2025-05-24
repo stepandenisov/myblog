@@ -38,7 +38,7 @@ public class PostControllerUnitTest {
         Paging paging = new Paging(1, 10, false, false);
 
         when(postService.searchPaginated("", paging))
-                .thenReturn(List.of(new Post(1L, "test", "test", 0, new ArrayList<>(), new ArrayList<>())));
+                .thenReturn(List.of(new Post(1L, "test", "test", 0, new ArrayList<>(), "First tag")));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/posts"))
                 .andExpect(status().isOk())
@@ -55,7 +55,7 @@ public class PostControllerUnitTest {
     void post_shouldReturnHtmlWithPost() throws Exception {
 
         when(postService.findById(1L))
-                .thenReturn(Optional.of(new Post(1L, "test", "test", 0, new ArrayList<>(), new ArrayList<>())));
+                .thenReturn(Optional.of(new Post(1L, "test", "test", 0, new ArrayList<>(), "First tag")));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/posts/1"))
                 .andExpect(status().isOk())
@@ -95,7 +95,7 @@ public class PostControllerUnitTest {
         MockPart tagsPart = new MockPart("tags", "Test".getBytes());
 
         when(postService.updatePost(1L, "title", "text", "", image.getBytes()))
-                .thenReturn(Optional.of(new Post(1L, "title", "text", 0, new ArrayList<>(), new ArrayList<>())));
+                .thenReturn(Optional.of(new Post(1L, "title", "text", 0, new ArrayList<>(), "First tag")));
 
         mockMvc.perform(multipart("/posts/1")
                         .file(image)
@@ -110,7 +110,7 @@ public class PostControllerUnitTest {
     void edit_shouldRedirectToEditPostPage() throws Exception {
 
         when(postService.findById(1L))
-                .thenReturn(Optional.of(new Post(1L, "test", "test", 0, new ArrayList<>(), new ArrayList<>())));
+                .thenReturn(Optional.of(new Post(1L, "test", "test", 0, new ArrayList<>(), "First tag")));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/posts/1/edit"))
                 .andExpect(status().isOk())
@@ -136,8 +136,8 @@ public class PostControllerUnitTest {
     @Test
     void changeLikes_shouldRedirectToPostById() throws Exception {
 
-        Post post = new Post(1L, "test", "test", 0, new ArrayList<>(), new ArrayList<>());
-        Post liked = new Post(1L, "test", "test", 1, new ArrayList<>(), new ArrayList<>());
+        Post post = new Post(1L, "test", "test", 0, new ArrayList<>(), "First tag");
+        Post liked = new Post(1L, "test", "test", 1, new ArrayList<>(), "First tag");
 
         when(postService.findById(1L))
                 .thenReturn(Optional.of(post));

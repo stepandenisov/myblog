@@ -32,19 +32,14 @@ public class PostServiceUnitTest {
     private PostRepository postRepository;
 
     @Mock
-    private TagService tagService;
-
-    @Mock
     private ImageService imageService;
 
     @Test
     void insertPost_shouldInsertPost() {
 
-        Post post = new Post(null, "Test", "Test", 0L, new ArrayList<>(), new ArrayList<>());
-        Post insertedPost = new Post(1L, "Test", "Test", 0L, new ArrayList<>(), new ArrayList<>());
+        Post post = new Post(null, "Test", "Test", 0L, new ArrayList<>(), "First tag");
+        Post insertedPost = new Post(1L, "Test", "Test", 0L, new ArrayList<>(), "First tag");
 
-        doReturn(new Tag()).when(tagService)
-                .save("First tag");
         doReturn(insertedPost).when(postRepository)
                 .save(post);
 
@@ -63,7 +58,7 @@ public class PostServiceUnitTest {
                 "text",
                 0,
                 new ArrayList<>(),
-                new ArrayList<>());
+                "First tag");
         doReturn(Optional.of(testPost)).when(postRepository)
                 .findById(1L);
 
@@ -79,12 +74,10 @@ public class PostServiceUnitTest {
     @Test
     void updatePost_shouldUpdatePostAndReturnUpdated() {
 
-        Post updatePost = new Post(1L, "New", "New", 0L, new ArrayList<>(), new ArrayList<>());
+        Post updatePost = new Post(1L, "New", "New", 0L, new ArrayList<>(), "First tag");
 
         doReturn(Optional.of(updatePost)).when(postRepository)
                 .findById(1L);
-        doReturn(new Tag()).when(tagService)
-                .save("First tag");
         doNothing().when(imageService)
                 .updateImageByPostId(1L, new byte[]{1});
         doReturn(updatePost).when(postRepository)
@@ -107,16 +100,13 @@ public class PostServiceUnitTest {
                         "text",
                         0,
                         new ArrayList<>(),
-                        new ArrayList<>())
+                        "First tag")
         );
         Paging paging = new Paging(1, 10, false, false);
-        Tag tag = new Tag(1L, "test");
         doReturn(postList).when(postRepository)
-                .findAllByTagsContains(PageRequest.of(0, 10), tag);
-        doReturn(Optional.of(tag)).when(tagService)
-                .findTagByName("test");
+                .findAllByTagsContains("First tag", PageRequest.of(0, 10));
 
-        List<Post> result = postService.searchPaginated("test", paging);
+        List<Post> result = postService.searchPaginated("First tag", paging);
         assertEquals(1, result.size(), "Количество постов должно быть 1");
         Post post = result.get(0);
         assertEquals(1, post.getId(), "id должен быть равен 1");

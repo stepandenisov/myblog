@@ -41,34 +41,23 @@ public class PostControllerIntegrationTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
         // Очистка и заполнение тестовых данных в базе
-        jdbcTemplate.execute("TRUNCATE TABLE images RESTART IDENTITY");
-        jdbcTemplate.execute("TRUNCATE TABLE posts_tags RESTART IDENTITY");
-        jdbcTemplate.execute("TRUNCATE TABLE post_comments RESTART IDENTITY");
+        jdbcTemplate.execute("TRUNCATE TABLE IMAGES RESTART IDENTITY");
+        jdbcTemplate.execute("TRUNCATE TABLE POST_COMMENTS RESTART IDENTITY");
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY=0");
-        jdbcTemplate.execute("TRUNCATE TABLE tags RESTART IDENTITY");
-        jdbcTemplate.execute("TRUNCATE TABLE posts RESTART IDENTITY");
+        jdbcTemplate.execute("TRUNCATE TABLE POSTS RESTART IDENTITY");
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY=1");
 
-        jdbcTemplate.execute("insert into posts(title, post_text, likes_count) values ('First post', 'Text of the first post', 0);");
-        jdbcTemplate.execute("insert into posts(title, post_text, likes_count) values ('Second post', 'Text of the second post', 0);");
-        jdbcTemplate.execute("insert into posts(title, post_text, likes_count) values ('Third post', 'Text of the third post', 0);");
+        jdbcTemplate.execute("insert into POSTS(TITLE, POST_TEXT, POST_TAGS, LIKES_COUNT) values ('First post', 'First tag','Text of the first post', 0);");
+        jdbcTemplate.execute("insert into POSTS(TITLE, POST_TEXT, POST_TAGS, LIKES_COUNT) values ('Second post', 'Second tag', 'Text of the second post', 0);");
+        jdbcTemplate.execute("insert into POSTS(TITLE, POST_TEXT, POST_TAGS, LIKES_COUNT) values ('Third post', 'Third tag', 'Text of the third post', 0);");
 
-        jdbcTemplate.execute("insert into tags(tag_name) values ('First tag');");
-        jdbcTemplate.execute("insert into tags(tag_name) values ('Second tag');");
-        jdbcTemplate.execute("insert into tags(tag_name) values ('Third tag');");
+        jdbcTemplate.execute("insert into POST_COMMENTS(POST_ID, COMMENT_TEXT) values (1, 'First comment');");
+        jdbcTemplate.execute("insert into POST_COMMENTS(POST_ID, COMMENT_TEXT) values (2, 'Second comment');");
+        jdbcTemplate.execute("insert into POST_COMMENTS(POST_ID, COMMENT_TEXT) values (2, 'Third comment');");
 
-        jdbcTemplate.execute("insert into post_comments(post_id, comment_text) values (1, 'First comment');");
-        jdbcTemplate.execute("insert into post_comments(post_id, comment_text) values (2, 'Second comment');");
-        jdbcTemplate.execute("insert into post_comments(post_id, comment_text) values (2, 'Third comment');");
-
-        jdbcTemplate.execute("insert into posts_tags(post_id, tag_id) values (1, 1);");
-        jdbcTemplate.execute("insert into posts_tags(post_id, tag_id) values (2, 2);");
-        jdbcTemplate.execute("insert into posts_tags(post_id, tag_id) values (3, 3);");
-        jdbcTemplate.execute("insert into posts_tags(post_id, tag_id) values (1, 3);");
-
-        jdbcTemplate.execute("insert into images(post_id, image) values (1, file_read('" + projectPath + "src/main/resources/assets/1.jpg'));");
-        jdbcTemplate.execute("insert into images(post_id, image) values (2, file_read('" + projectPath + "src/main/resources/assets/2.jpg'));");
-        jdbcTemplate.execute("insert into images(post_id, image) values (3, file_read('" + projectPath + "src/main/resources/assets/3.jpg'));");
+        jdbcTemplate.execute("insert into IMAGES(POST_ID, IMAGE) values (1, file_read('" + projectPath + "src/main/resources/assets/1.jpg'));");
+        jdbcTemplate.execute("insert into IMAGES(POST_ID, IMAGE) values (2, file_read('" + projectPath + "src/main/resources/assets/2.jpg'));");
+        jdbcTemplate.execute("insert into IMAGES(POST_ID, IMAGE) values (3, file_read('" + projectPath + "src/main/resources/assets/3.jpg'));");
     }
 
     @Test
