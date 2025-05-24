@@ -1,9 +1,9 @@
 insert into POSTS(TITLE, POST_TEXT, POST_TAGS, LIKES_COUNT)
-values ('First post', 'First tag','Text of the first post', 0);
+values ('First post', 'Text of the first post', 'First tag', 0);
 insert into POSTS(TITLE, POST_TEXT, POST_TAGS, LIKES_COUNT)
-values ('Second post', 'Second tag', 'Text of the second post', 0);
+values ('Second post', 'Text of the second post', 'Second tag', 0);
 insert into POSTS(TITLE, POST_TEXT, POST_TAGS, LIKES_COUNT)
-values ('Third post', 'Third tag', 'Text of the third post', 0);
+values ('Third post', 'Text of the third post', 'Third tag', 0);
 
 
 insert into POST_COMMENTS(POST_ID, COMMENT_TEXT)
